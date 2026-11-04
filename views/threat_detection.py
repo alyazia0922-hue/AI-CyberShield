@@ -58,7 +58,11 @@ def render() -> None:
             "connections", "unique_ports", "bytes_out_mb", "off_hours", "new_location", "reasons"]
     tbl = view.sort_values("anomaly_score", ascending=False)[cols].head(500).copy()
     tbl["classification"] = tbl["classification"].astype(str)
-    st.dataframe(tbl, width="stretch", hide_index=True, column_config={
+    def _danger_text(val: str) -> str:
+        return {"High Risk": "color:#dc2626;font-weight:700", "Suspicious": "color:#d97706;font-weight:600"}.get(val, "")
+
+    styled = tbl.style.map(_danger_text, subset=["classification"])
+    st.dataframe(styled, width="stretch", hide_index=True, column_config={
         "anomaly_score": st.column_config.ProgressColumn("anomaly_score", min_value=0, max_value=100, format="%.0f"),
         "event_risk": st.column_config.ProgressColumn("event_risk", min_value=0, max_value=100, format="%.0f"),
         "bytes_out_mb": st.column_config.NumberColumn("bytes_out_mb", format="%.1f"),
