@@ -20,9 +20,10 @@ def render() -> None:
         st.info("No recommendations for the selected priorities.")
         return
     for _, r in shown.iterrows():
+        title_color = ui.RED if r["priority"] in ("Critical", "High") else ui.TEXT
         st.markdown(
             f'<div class="cs-rec">{ui.badge(r["priority"], ui.PRIORITY_COLORS[r["priority"]])} '
-            f'&nbsp;<b style="font-size:1.05rem">{r["title"]}</b>'
+            f'&nbsp;<b style="font-size:1.05rem;color:{title_color}">{r["title"]}</b>'
             f'<div class="k">Linked finding</div>{r["finding"]}'
             f'<div class="k">Recommended action</div>{r["action"]}'
             f'<div class="k">Why it matters</div>{r["why"]}'
